@@ -2,7 +2,6 @@ package me.fond.nodesoverlay;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.fond.nodesoverlay.gui.AccessUnavailableScreen;
 import me.fond.nodesoverlay.gui.NodesOverlaySettingsScreen;
 import me.fond.nodesoverlay.gui.SyncWarningHud;
 import me.fond.nodesoverlay.integration.xaero.TerritoryWaypointManager;
@@ -108,15 +107,8 @@ public final class NodesOverlay implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             NodesOverlayRuntime.tick(client);
-            if (NodesOverlayRuntime.accessAllowed()) {
-                replayPendingWarMessages();
-                tickScheduledWarMessages(client);
-            } else {
-                if (NodesOverlayRuntime.accessDenied()) {
-                    PENDING_WAR_MESSAGES.clear();
-                }
-                clearScheduledWarMessages();
-            }
+            replayPendingWarMessages();
+            tickScheduledWarMessages(client);
             NodesOverlayRuntime.flushHighlights();
             while (settingsKey.wasPressed()) {
                 if (NodesOverlayRuntime.serverAddress() != null) {
@@ -141,7 +133,7 @@ public final class NodesOverlay implements ClientModInitializer {
     private static void registerCommands() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
                 dispatcher.register(ClientCommandManager.literal("xnma")
-                        .requires(source -> NodesOverlayRuntime.configurationAccessAllowed())
+                        .requires(source -> NodesOverlayRuntime.serverAddress() != null)
                         .executes(context -> openSettings(MinecraftClient.getInstance()))
                         .then(ClientCommandManager.literal("settings")
                                 .executes(context -> openSettings(MinecraftClient.getInstance())))
@@ -369,10 +361,6 @@ public final class NodesOverlay implements ClientModInitializer {
             feedback("Join a world or server before opening Nodes Overlay settings.");
             return 0;
         }
-        if (!NodesOverlayRuntime.configurationAccessAllowed()) {
-            client.setScreen(new AccessUnavailableScreen(client.currentScreen));
-            return 0;
-        }
         client.setScreen(new NodesOverlaySettingsScreen(client.currentScreen));
         return 1;
     }
@@ -382,12 +370,6 @@ public final class NodesOverlay implements ClientModInitializer {
             return;
         }
         String raw = text.getString();
-        if (!NodesOverlayRuntime.accessAllowed()) {
-            if (!NodesOverlayRuntime.accessDenied()) {
-                PENDING_WAR_MESSAGES.offerIfWarMessage(raw);
-            }
-            return;
-        }
         try {
             PORT_INFO_PARSER.accept(raw).ifPresent(observation -> {
                 PortRecord port = NodesOverlayRuntime.observePort(observation);

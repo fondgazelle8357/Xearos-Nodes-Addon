@@ -47,10 +47,6 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - Made the in-game `/territory` `Town:` row authoritative for the node's owner,
   ownership status, owner color, town/nation labels, and tooltips. The separate
   `Occupier:` row and exact per-chunk war outcomes remain layered above it.
-- Replaced the towns.json-dependent player, town, and nation access check with
-  a local authenticated-session UUID deny list. Access now resolves before map
-  data downloads complete and remains stable across account renames and town or
-  nation changes.
 - Renamed versioned build artifacts to `xearos-nodes-<version>.jar`.
 - Port relationship colors now follow the current controller of the containing
   node instead of the owner cached by `/port info`. Live war occupation,
@@ -138,9 +134,6 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - Made chunk and territory liberation chat events override stale occupation
   data immediately. A liberated chunk now returns to its owner color while
   neighboring chunks remain striped until their own state changes.
-- Added a configurable UUID access blacklist backed by each server profile.
-  Blacklisted clients lose overlays, waypoints, chat updates, debug commands,
-  and settings access; the public build has no entries blocked by default.
 - Renamed the client command root to `/xnma` (Xaero's Node Map
   Addon), including every existing subcommand.
 - Made active attacks lifecycle-driven instead of timer-driven. Attack icons

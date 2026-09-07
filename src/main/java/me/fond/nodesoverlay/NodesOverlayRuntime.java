@@ -1,6 +1,5 @@
 package me.fond.nodesoverlay;
 
-import me.fond.nodesoverlay.access.AccessBlacklist;
 import me.fond.nodesoverlay.config.ServerConfigManager;
 import me.fond.nodesoverlay.config.ServerSettings;
 import me.fond.nodesoverlay.data.NodesOverlaySnapshot;
@@ -14,13 +13,11 @@ import me.fond.nodesoverlay.war.TerritoryInfoObservation;
 import me.fond.nodesoverlay.war.WarEvent;
 import me.fond.nodesoverlay.war.WarTracker;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -43,9 +40,6 @@ public final class NodesOverlayRuntime {
     private static volatile String serverAddress;
     private static volatile boolean active;
     private static volatile DataSyncService sync;
-    private static volatile AccessBlacklist.Decision accessDecision =
-            AccessBlacklist.Decision.pending();
-
     private NodesOverlayRuntime() {
     }
 
@@ -56,7 +50,6 @@ public final class NodesOverlayRuntime {
     public static synchronized void activate(String address) {
         deactivate();
         serverAddress = address == null || address.isBlank() ? "singleplayer" : address.trim();
-        accessDecision = AccessBlacklist.Decision.pending();
         ServerSettings settings = CONFIG.activate(serverAddress);
         PORT_TRACKER.activate(CONFIG.serverDirectory(), logger);
         active = settings.enabled;
@@ -82,7 +75,6 @@ public final class NodesOverlayRuntime {
             current.close();
         }
         active = false;
-        accessDecision = AccessBlacklist.Decision.pending();
         serverAddress = null;
         SNAPSHOT.set(NodesOverlaySnapshot.empty());
         WAR_TRACKER.clear();
@@ -94,14 +86,11 @@ public final class NodesOverlayRuntime {
     public static void tick(MinecraftClient client) {
         DataSyncService current = sync;
         if (active && current != null) {
-            updateAccess(client);
             current.tick();
             if (WAR_TRACKER.expire(CONFIG.settings().warEventExpirationSeconds)) {
                 markersChanged();
             }
-            if (accessDecision.allowed()) {
-                WAR_TRACKER.tick(client);
-            }
+            WAR_TRACKER.tick(client);
         }
     }
 
@@ -194,34 +183,11 @@ public final class NodesOverlayRuntime {
     }
 
     public static boolean isActive() {
-        return active && CONFIG.settings().enabled && accessDecision.allowed();
+        return active && CONFIG.settings().enabled;
     }
 
     public static boolean sessionEnabled() {
         return active && CONFIG.settings().enabled;
-    }
-
-    public static boolean accessAllowed() {
-        return accessDecision.allowed();
-    }
-
-    public static boolean accessDenied() {
-        return accessDecision.denied();
-    }
-
-    public static boolean configurationAccessAllowed() {
-        return AccessBlacklist.canConfigure(
-                CONFIG.settings().enabled,
-                accessDecision
-        );
-    }
-
-    public static AccessBlacklist.Decision accessDecision() {
-        return accessDecision;
-    }
-
-    public static String accessMessage() {
-        return accessDecision.message();
     }
 
     public static String serverAddress() {
@@ -278,41 +244,4 @@ public final class NodesOverlayRuntime {
         }
     }
 
-    private static void updateAccess(MinecraftClient client) {
-        UUID playerUuid = client == null || client.getSession() == null
-                ? null
-                : client.getSession().getUuidOrNull();
-        String playerName = client == null || client.player == null
-                ? ""
-                : client.player.getName().getString();
-        AccessBlacklist.Decision updated = AccessBlacklist.evaluate(
-                playerUuid,
-                playerName,
-                CONFIG.settings()
-        );
-        AccessBlacklist.Decision previous = accessDecision;
-        if (updated.equals(previous)) {
-            return;
-        }
-        accessDecision = updated;
-        if (updated.denied()) {
-            WAR_TRACKER.clear();
-            TerritoryWaypointManager.clear();
-            if (client != null && client.player != null) {
-                client.player.sendMessage(
-                        Text.literal("[Nodes Overlay] " + updated.message()),
-                        false
-                );
-            }
-            if (logger != null) {
-                logger.warn(
-                        "Nodes Overlay access denied for {} ({}) by UUID blacklist entry {}",
-                        updated.playerName(),
-                        updated.playerUuid(),
-                        updated.matchedValue()
-                );
-            }
-        }
-        changed();
-    }
 }

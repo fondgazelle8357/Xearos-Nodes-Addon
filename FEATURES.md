@@ -59,8 +59,7 @@ port, and war information directly to Xaero's World Map and Minimap.
 - Applies standalone chunk and territory capture messages without requiring the
   client to have seen the original attack.
 - Buffers bounded, deduplicated war messages received during login or server
-  transfer and replays them after access is approved, while discarding them for
-  blacklisted clients.
+  transfer and replays them once the map profile is active.
 - Matches chunk outcomes to their exact attack chunk, allowing simultaneous
   flag attacks inside one large territory.
 - Updates the local overlay immediately without waiting for another complete
@@ -126,18 +125,6 @@ Supported messages include:
 - Treats `towns.json` captured-territory entries as coarse occupation data.
   Once exact chunk messages are available, only those captured chunks are
   striped instead of incorrectly hatching the entire non-annexed node.
-
-## UUID Access Blacklist
-
-- Supports local authenticated Minecraft UUID blacklist entries.
-- Does not use `towns.json`, account names, towns, or nations for access.
-- Resolves access as soon as the local session UUID is available.
-- Disables overlays, chat updates, waypoints, commands, and settings after a
-  match.
-- Starts with an empty blacklist; administrators add UUIDs per server profile.
-- Stores additional entries in each server profile's `settings.json`.
-- Acts as client-side deterrence and is not tamper-proof against a modified
-  mod JAR.
 
 ## Performance
 

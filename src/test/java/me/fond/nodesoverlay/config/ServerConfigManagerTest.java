@@ -37,7 +37,6 @@ final class ServerConfigManagerTest {
         original.worldUrl = "https://example.test/custom-world.json";
         original.portsUrl = "https://example.test/custom-ports.json";
         original.warIconScale = 1.65D;
-        original.blacklistedUuids.add("00000000-0000-0000-0000-000000000003");
         writer.save();
 
         Path serverDirectory = writer.serverDirectory();
@@ -51,9 +50,6 @@ final class ServerConfigManagerTest {
         assertEquals(original.worldUrl, loaded.worldUrl);
         assertEquals(original.portsUrl, loaded.portsUrl);
         assertEquals(1.65D, loaded.warIconScale);
-        assertTrue(loaded.blacklistedUuids.contains(
-                "00000000-0000-0000-0000-000000000003"
-        ));
     }
 
     @Test
@@ -91,7 +87,6 @@ final class ServerConfigManagerTest {
         assertEquals(6, settings.configurationVersion);
         assertEquals(235, settings.borderOpacity);
         assertEquals(155, settings.internalBorderOpacity);
-        assertTrue(settings.blacklistedUuids.isEmpty());
         assertFalse(settings.showOverviewTownNames);
         assertTrue(settings.showPortOwnerInLabels);
     }

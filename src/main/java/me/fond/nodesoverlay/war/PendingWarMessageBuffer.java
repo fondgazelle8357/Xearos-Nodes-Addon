@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Retains server war messages received briefly before the authenticated
- * session UUID is available. Messages are parsed before buffering, bounded to a
- * small capacity, and replayed only after access is allowed.
+ * Retains server war messages received briefly during login or server transfer.
+ * Messages are parsed before buffering, bounded to a small capacity, and
+ * replayed once the map profile is active.
  */
 public final class PendingWarMessageBuffer {
 

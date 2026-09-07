@@ -5,7 +5,6 @@ import me.fond.nodesoverlay.model.RgbColor;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -71,7 +70,6 @@ public final class ServerSettings {
     public volatile String portsUrl = DEFAULT_PORTS_URL;
     public Set<Integer> hiddenTerritories = new HashSet<>();
     public Set<Integer> trackedTerritories = new HashSet<>();
-    public Set<String> blacklistedUuids = new HashSet<>();
 
     public static ServerSettings defaultsFor(String serverAddress) {
         ServerSettings settings = new ServerSettings();
@@ -93,7 +91,6 @@ public final class ServerSettings {
     }
 
     public void normalize() {
-        blacklistedUuids = concurrentUuidCopy(blacklistedUuids);
         if (configurationVersion < 5) {
             // Preserve the existing "Port | Owner" label for upgraded
             // profiles until the user explicitly disables the suffix.
@@ -171,39 +168,6 @@ public final class ServerSettings {
             result.addAll(source);
         }
         return result;
-    }
-
-    private static Set<String> concurrentUuidCopy(Set<String> source) {
-        Set<String> result = ConcurrentHashMap.newKeySet();
-        if (source == null) {
-            return result;
-        }
-        for (String value : source) {
-            String canonical = canonicalUuid(value);
-            if (canonical != null) {
-                result.add(canonical);
-            }
-        }
-        return result;
-    }
-
-    private static String canonicalUuid(String value) {
-        if (value == null) {
-            return null;
-        }
-        String cleaned = value.trim();
-        if (cleaned.length() == 32) {
-            cleaned = cleaned.substring(0, 8) + "-"
-                    + cleaned.substring(8, 12) + "-"
-                    + cleaned.substring(12, 16) + "-"
-                    + cleaned.substring(16, 20) + "-"
-                    + cleaned.substring(20);
-        }
-        try {
-            return UUID.fromString(cleaned).toString();
-        } catch (IllegalArgumentException ignored) {
-            return null;
-        }
     }
 
     private static String urlOr(String value, String fallback) {

@@ -49,17 +49,6 @@ public final class NodesOverlaySettingsScreen extends Screen {
     }
 
     @Override
-    public void tick() {
-        if (!NodesOverlayRuntime.configurationAccessAllowed()) {
-            if (client != null) {
-                client.setScreen(new AccessUnavailableScreen(parent));
-            }
-            return;
-        }
-        super.tick();
-    }
-
-    @Override
     protected void init() {
         rows.clear();
         ServerSettings settings = NodesOverlayRuntime.settings();

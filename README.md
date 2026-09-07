@@ -195,9 +195,8 @@ disagrees. Live occupation state resets on disconnect.
 
 A capture message does not require the client to have seen the original attack.
 War messages arriving during login or a server transfer are held briefly until
-the local session UUID check completes, then replayed in order. This allows a
-player joining late to see a captured chunk immediately from the capture line
-alone.
+the map profile is active, then replayed in order. This allows a player joining
+late to see a captured chunk immediately from the capture line alone.
 
 War debug commands display a real local `[War]` chat line and feed that text
 through the same client listener and parser used for server messages. Delay
@@ -255,25 +254,6 @@ The important defaults are:
 | Distant world-waypoint scale | Two-thirds size beyond 20 blocks |
 | Core-marker mode | Zoomed in |
 | Core-marker zoom threshold | `0.55` |
-
-### UUID access blacklist
-
-Each server profile's `settings.json` contains a local UUID deny list:
-
-```json
-{
-  "blacklistedUuids": ["00000000-0000-0000-0000-000000000001"]
-}
-```
-
-The authenticated Minecraft session UUID is checked locally and immediately.
-Access does not depend on `towns.json`, map availability, the account's current
-name, town, or nation. Both dashed and undashed UUID entries are accepted and
-saved in canonical dashed form. A match disables the Xaero overlays, live chat
-processing, addon-created waypoints, `/xnma` commands, and settings access.
-
-This is client-side access control. It prevents normal use of the distributed
-build, but it cannot stop someone from modifying or replacing the mod JAR.
 
 The addon enables itself automatically for the default map server domain
 `crusalis.net` and its subdomains.
