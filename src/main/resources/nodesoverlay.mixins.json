@@ -1,0 +1,18 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "me.fond.nodesoverlay.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"xaero.GuiMapInteractionMixin",
+		"xaero.MinimapHighlighterRegistryMixin",
+		"xaero.MinimapOverMapRendererHandlerMixin",
+		"xaero.WaypointWorldRendererMixin",
+		"xaero.WorldMapElementRenderHandlerMixin",
+		"xaero.WorldMapHighlighterBridgeMixin",
+		"xaero.WorldMapHighlighterRegistryMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"mod.nodesoverlay.name": "Nodes Overlay",
+	"key.category.nodesoverlay": "Nodes Overlay",
+	"key.category.nodesoverlay.main": "Nodes Overlay",
+	"key.nodesoverlay.open_settings": "Open Nodes Overlay Settings",
+	"text.nodesoverlay.refresh": "Refresh Map Data",
+	"text.nodesoverlay.clear_cache": "Clear Local Cache"
+}
