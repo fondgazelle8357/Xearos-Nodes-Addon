@@ -260,6 +260,54 @@ The addon enables itself automatically for the default map server domain
 Other direct IPs, alternate domains, and development servers get their own
 profile and can be enabled there without sharing settings or cached data.
 
+### Configuring another server map
+
+Each Minecraft server has an isolated profile. The profile is selected from
+the server address, so settings and cached map data from one server are never
+used for another. For a server that is not under `crusalis.net`, configure it
+once after joining:
+
+1. Join the server and run `/xnma toggle` to enable the profile.
+2. Press `N`, or run `/xnma settings`, to open the Nodes Overlay settings.
+3. Replace **Towns endpoint**, **World endpoint**, and **Ports endpoint** with
+   the URLs published by that server's map administrator.
+4. Click **Refresh Map Data**, then run `/xnma status` to confirm that the
+   endpoints loaded successfully.
+
+For example, SiegeMC publishes the standard Nodes files at these URLs:
+
+```json
+{
+  "enabled": true,
+  "townsUrl": "https://map.siegemc.eu/nodes/towns.json",
+  "worldUrl": "https://map.siegemc.eu/nodes/world.json",
+  "portsUrl": "https://map.siegemc.eu/nodes/ports.json"
+}
+```
+
+The same pattern can be used for a PolarisMC map when its administrator
+publishes the corresponding files:
+
+```text
+Web map:       https://map.polarismc.org/
+Towns file:    https://map.polarismc.org/nodes/towns.json
+World file:    https://map.polarismc.org/nodes/world.json
+Ports file:    https://map.polarismc.org/nodes/ports.json
+```
+
+Before saving a profile, open each URL in a browser and make sure it returns
+the expected JSON object rather than an HTML page or a 404 response. Some maps
+use a different path or do not publish ports; in that case, disable **Port
+markers** and ask the map administrator for the correct Node data URLs. A
+failed optional ports request does not prevent the towns and world overlays
+from loading. The addon cannot infer Node data from map image tiles alone.
+
+The generated profile lives below the instance's `config/nodesoverlay/servers`
+directory. Its folder name has the form `<sanitized-host>-<hash>`; editing the
+settings screen is preferred, but advanced users can edit that profile's
+`settings.json` directly while Minecraft is closed. Keep the JSON valid and
+run `/xnma refresh` after changes.
+
 ### Cache behavior
 
 - `towns.json`, `world.json`, and `ports.json` are fetched after joining a matching server
