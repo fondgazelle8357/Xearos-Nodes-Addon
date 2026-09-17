@@ -5,6 +5,15 @@ All notable changes to Nodes Overlay are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [1.2.3] - 2026-09-16
+
+### Changed
+
+- Updated the development and runtime compatibility range for Xaero's World
+  Map `1.46.x` and Xaero's Minimap `26.5.x` on Minecraft `1.21.11`.
+- Refreshed the Xaero integration dependency pins to World Map `1.46.0` and
+  Minimap `26.5.0`.
+
 ## [1.1.1] - 2026-09-07
 
 ### Fixed

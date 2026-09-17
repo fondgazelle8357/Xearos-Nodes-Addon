@@ -153,8 +153,8 @@ Supported messages include:
 - Java `21`
 - Fabric Loader `0.17.3` through the latest stable release
 - Fabric API `0.141.3+1.21.11` or newer compatible release
-- Xaero's World Map `1.41.x` through `1.44.x`
-- Xaero's Minimap `26.1.x` through `26.4.x`
+- Xaero's World Map `1.41.x` through `1.46.x`
+- Xaero's Minimap `26.1.x` through `26.5.x`
 - Mod Menu support is optional
 
 The addon is completely client-side and does not need to be installed on the

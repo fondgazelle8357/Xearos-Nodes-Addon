@@ -60,13 +60,14 @@ compatible 1.21.11 release families shown below.
 | Java | `21` |
 | Fabric Loader | `0.17.3` through the latest stable release |
 | Fabric API | `0.141.3+1.21.11` or newer compatible release |
-| Xaero's World Map | `>=1.41.0 <1.46.0` |
-| Xaero's Minimap | `>=26.1.0 <26.5.0` |
+| Xaero's World Map | `>=1.41.0 <1.47.0` |
+| Xaero's Minimap | `>=26.1.0 <26.6.0` |
 | Mod Menu (optional) | `17.0.0` |
 
 The addon is compatibility-checked against the published matching pairs
 `1.41.0`/`26.1.0`, `1.41.2`/`26.1.4`, `1.42.0`/`26.2.0`,
-`1.43.0`/`26.3.0`, `1.44.2`/`26.4.2`, and `1.45.0`/`26.4.2`. Use Xaero World Map and Minimap
+`1.43.0`/`26.3.0`, `1.44.2`/`26.4.2`, `1.45.0`/`26.4.2`, and
+`1.46.0`/`26.5.0`. Use Xaero World Map and Minimap
 versions released together. Versions outside the ranges above are not
 supported by this build.
 
